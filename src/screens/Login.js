@@ -1,16 +1,35 @@
 import React, { useState } from "react";
-import { TextInput } from "react-native-web";
 import "../App.css";
+import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const auth = getAuth();
+  const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
-    // Add your authentication logic here
-    console.log("Email:", email, "Password:", password);
-    // You can replace the console.log with your authentication logic
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+      navigate('/home');
+
+
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+
+    });
+  
   };
 
   return (
