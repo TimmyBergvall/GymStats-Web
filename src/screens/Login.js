@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 
+import { Link } from 'react-router-dom';
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,8 +55,11 @@ function Login() {
           </div>
           <div className="form-group">
             <input type="submit" value="Sign In" className="submit-button" />
+            
           </div>
         </form>
+        <br/>
+        <Link className="myLink" to="/register">No account?</Link>
       </header>
     </div>
   );

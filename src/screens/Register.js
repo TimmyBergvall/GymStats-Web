@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "../App.css";
-import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
-import { auth, firestore } from "../database/Firebase";
+import {  firestore } from "../database/Firebase";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth();
 
 
 function Register() {
@@ -22,86 +24,84 @@ function Register() {
   const navigate = useNavigate();
 
 
-  const functionRegister = () => {
+  const functionRegister = (e) => {
+    e.preventDefault();
     if (email === '') {
-      console.log('Please enter an email');
+      alert('Please enter an email');
       return;
     }
 
     if (reg.test(email) === false) {
-      console.log('Please enter a valid email');
+      alert('Please enter a valid email');
       return;
     }
 
     if (password.length < 6) {
-      console.log(
-        'Password must be at least 6 characters');
+      alert('Password must be at least 6 characters');
       return;
     }
 
     if (password !== passwordConfirm) {
-      console.log('Passwords do not match');
-      console.log(password, passwordConfirm);
+      alert('Passwords do not match');
+      return;
+    }
+
+    if (age === '') {
+      alert('Please enter your age');
+      return;
+    }
+
+    if (gender === '') {
+      alert('Please enter your gender');
+      return;
+    }
+
+    if (startWeight === '') {
+      alert('Please enter your current weight');
+      return;
+    }
+
+    if (goalWeight === '') {
+      alert('Please enter your goal weight');
+      return;
+    }
+
+    if (length === '') {
+      alert('Please enter your length');
+      return;
+    }
+
+    if (weeklyGoal === '') {
+      alert('Please enter your weekly goal');
       return;
     }
 
     try {
-      auth()
-        .createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          console.log('User account created & signed in!');
           createDetails();
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
+            alert('That email address is already in use!');
           }
 
           if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
+            alert('That email address is invalid!');
           }
           console.error(error);
         });
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
   const createDetails = async () => {
-    const user = auth().currentUser;
+    const user = auth.currentUser;
     const db = firestore;
     const userRef = db.collection('Users').doc(user.uid);
     const detailsRef = userRef.collection('Details');
 
-    if (age == '') {
-      console.log('Please enter your age');
-      return;
-    }
-
-    if (gender == '') {
-      console.log('Please enter your gender');
-      return;
-    }
-
-    if (startWeight == '') {
-      console.log('Please enter your current weight');
-      return;
-    }
-
-    if (goalWeight == '') {
-      console.log('Please enter your goal weight');
-      return;
-    }
-
-    if (length == '') {
-      console.log('Please enter your length');
-      return;
-    }
-
-    if (weeklyGoal == '') {
-      console.log('Please enter your weekly goal');
-      return;
-    }
 
     try {
       const userDetails = {
@@ -128,7 +128,7 @@ function Register() {
   };
 
   const addWeight = async () => {
-    const user = auth().currentUser;
+    const user = auth.currentUser;
     const db = firestore;
     const userRef = db.collection('Users').doc(user.uid);
     const weightsRef = userRef.collection('Weights');
